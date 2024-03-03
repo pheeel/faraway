@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v3
+
+  tsc_check:
+    name: TypeScript Compilation
+    uses: ./.github/workflows/tsc-check.yml
+    secrets: inherit
+    needs: setup
+
+  eslint_check:
+    name: ESLint
+    uses: ./.github/workflows/lint-check.yml
+    secrets: inherit
+    needs: setup

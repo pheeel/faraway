@@ -1,0 +1,70 @@
+name: Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      frontend_image:
+        description: 'Frontend image'
+        default: 'evercoinx/faraway:nft-collection-deployer-frontend'
+        required: true
+      backend_image:
+        description: 'Backend image'
+        default: 'evercoinx/faraway:nft-collection-deployer-backend'
+        required: true
+      retries:
+        description: 'Retries - How many times to rerun a failed test'
+        default: '2'
+        required: false
+
+jobs:
+  e2e-tests:
+    name: Smart Contract Tests
+    runs-on: ubuntu-latest
+    services:
+      frontend:
+        image: ${{ inputs.frontend_image }}
+        ports:
+          - 3000:3000
+      backend:
+        image: ${{ inputs.backend_image }}
+        ports:
+          - 4000:4000
+    timeout-minutes: 15
+    env:
+      RETRIES: ${{ inputs.retries }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+
+      - name: NPM install
+        run: npm install
+        shell: bash
+
+      - name: Install linux deps
+        run: |
+          sudo apt-get install --no-install-recommends -y \
+          fluxbox \
+          xvfb
+
+      - name: Tests
+        run: |
+          Xvfb :0 -screen 0 1024x768x24 -listen tcp -ac &
+          fluxbox &
+          npm run test
+        env:
+          DISPLAY: :0.0
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+

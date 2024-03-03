@@ -1,0 +1,5 @@
+export {
+  TEST_WALLET_ADDRESS,
+  DEPLOY_COLLECTION_TEST_DATA,
+  MINT_NFT_TEST_DATA,
+} from './testData'
