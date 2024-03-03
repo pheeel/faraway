@@ -1,11 +1,11 @@
 {
   "name": "faraway",
   "devDependencies": {
-    "@playwright/test": "1.42.1",
+    "@playwright/test": "1.37.0",
     "@typescript-eslint/eslint-plugin": "6.19.1",
     "@typescript-eslint/parser": "6.19.1",
     "@types/node": "20.11.5",
-    "@synthetixio/synpress": "3.5.1",
+    "@synthetixio/synpress": "3.7.2-beta.3",
     "eslint-config-airbnb": "19.0.4",
     "eslint-config-airbnb-typescript": "17.1.0",
     "eslint-config-prettier": "9.1.0",
@@ -21,6 +21,7 @@
     "lint:fix": "eslint src --fix",
     "lint:ci": "eslint src --quiet",
     "tsc": "tsc --noEmit",
-    "test": "npx playwright test --project=chromium"
+    "test": "playwright test --project=chromium",
+    "test:headless": "HEADLESS_MODE=true playwright test --project=chromium"
   }
 }

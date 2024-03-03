@@ -16,13 +16,12 @@ interface TestFixtures {
   // Context
   context: BrowserContext
   metamask: typeof metamask
-  metamaskSetup: boolean
 
   // Utils
   helpers: Helpers
 }
 
-const test = baseTest.extend<TestFixtures>({
+export const test = baseTest.extend<TestFixtures>({
   context: async ({}, use) => {
     // required for synpress
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
@@ -55,6 +54,13 @@ const test = baseTest.extend<TestFixtures>({
     await initialSetup(chromium, {
       secretWordsOrPrivateKey:
         'machine plastic wood coin dose put police coast door poverty fatal until',
+      network: {
+        networkName: 'Mumbai',
+        rpcUrl: 'https://rpc.ankr.com/polygon_mumbai',
+        chainId: '80001',
+        symbol: 'MATIC',
+        isTestnet: true,
+      },
       password: '12345678',
       enableAdvancedSettings: true,
     })
@@ -83,10 +89,12 @@ const test = baseTest.extend<TestFixtures>({
   },
 
   page: async ({ baseURL, page }, use) => {
-    await page.goto(baseURL)
+    await page.goto(baseURL, { waitUntil: 'networkidle' })
     await use(page)
   },
 })
 
 export default test
-export const { expect } = test
+// export const { expect } = test
+
+export const expect = test.expect

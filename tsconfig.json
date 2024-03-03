@@ -15,7 +15,7 @@
       "components": ["./src/components/index"],
       "fixtures": ["./src/fixtures/index"],
       "utils": ["./src/utils/index"],
-      "consts": ["./src/constants/index"]
+      "consts": ["./src/constants/index"],
     },
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
@@ -24,7 +24,7 @@
     "module": "esnext",
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react"
+    "jsx": "react",
   },
   "include": ["src/**/*"],
   "exclude": [
@@ -35,6 +35,6 @@
     "node_modules",
     "./node_modules",
     "./node_modules/*",
-    "./node_modules/@types/node/**"
-  ]
+    "./node_modules/@types/node/**",
+  ],
 }

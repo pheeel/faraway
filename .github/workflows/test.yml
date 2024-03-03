@@ -1,0 +1,67 @@
+name: Tests
+on:
+  workflow_dispatch:
+    inputs:
+      frontend_image:
+        description: 'Frontend image'
+        default: 'evercoinx/faraway:nft-collection-deployer-frontend'
+        required: true
+      backend_image:
+        description: 'Backend image'
+        default: 'evercoinx/faraway:nft-collection-deployer-backend'
+        required: true
+      retries:
+        description: 'Retries - How many times to rerun a failed test'
+        default: '1'
+        required: false
+jobs:
+  tests:
+    name: Tests
+    runs-on: macos-11
+    env:
+      RETRIES: ${{ inputs.retries }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Install Dependencies
+        run: npm i && npx playwright install chromium
+
+      - name: Setup Docker
+        if: runner.os == 'macos'
+        run: |
+          brew install docker
+          colima start
+
+      - name: Run Backend
+        run: |
+          docker pull ${{ github.event.inputs.backend_image }}
+          docker run -d -p 4000:4000 ${{ github.event.inputs.backend_image }}
+
+      - name: Run Frontend
+        run: |
+          docker pull ${{ github.event.inputs.frontend_image }}
+          docker run -d -p 3000:3000 ${{ github.event.inputs.frontend_image }}
+
+      - name: Wait for Frontend to be ready
+        run: |
+          for i in {1..30}; do
+            if nc -z localhost 3000; then
+              echo "Frontend is up and running on port 3000"
+              break
+            else
+              echo "Waiting for frontend to launch on port 3000..."
+              sleep 10
+            fi
+          done
+
+      - name: Run Tests
+        run: npm run test:headless
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 10

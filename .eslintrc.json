@@ -26,6 +26,8 @@
       { "exceptAfterSingleLine": true }
     ],
     "@typescript-eslint/no-explicit-any": "off",
+    "playwright/no-networkidle": "off",
+    "playwright/no-wait-for-timeout": "off",
     "max-len": [
       2,
       {

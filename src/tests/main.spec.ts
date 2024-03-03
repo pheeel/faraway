@@ -2,12 +2,18 @@ import test, { expect } from 'fixtures'
 import { DEPLOY_COLLECTION_TEST_DATA, MINT_NFT_TEST_DATA } from 'consts'
 
 test.describe.serial('App', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.waitForTimeout(3000)
+  })
+
   test('Deploy Collection', async ({
+    page,
     metamask,
     deployCollectionForm,
     eventsList,
   }) => {
     await metamask.acceptAccess()
+    await page.reload()
     await deployCollectionForm.fill(
       DEPLOY_COLLECTION_TEST_DATA.COLLECTION_NAME,
       DEPLOY_COLLECTION_TEST_DATA.COLLECTION_SYMBOL,
@@ -31,8 +37,9 @@ test.describe.serial('App', () => {
     })
   })
 
-  test('Mint NFT', async ({ metamask, mintNftForm, eventsList }) => {
+  test('Mint NFT', async ({ mintNftForm, metamask, eventsList, page }) => {
     await metamask.acceptAccess()
+    await page.reload()
     await mintNftForm.fill(
       MINT_NFT_TEST_DATA.COLLECTION_ADDRESS,
       MINT_NFT_TEST_DATA.RECIPIENT_ADDRESS,

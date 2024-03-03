@@ -4,15 +4,11 @@ import { config } from 'dotenv'
 config()
 const maxWorkers = process.env.MAX_WORKERS
 const retries = process.env.RETRIES
-const viewport = {
-  width: 1366,
-  height: 768,
-}
 
 export default defineConfig({
   workers: Number(maxWorkers),
   retries: Number(retries),
-  timeout: 1000 * 80,
+  timeout: 1000 * 100,
   reporter: [['list'], ['html', { open: 'never' }]],
   testDir: 'src/tests',
   testMatch: ['**/src/tests/**/**.spec.ts'],
@@ -21,7 +17,7 @@ export default defineConfig({
     video: 'on-first-retry',
     screenshot: 'only-on-failure',
     baseURL: 'http://localhost:3000',
-    actionTimeout: 1000 * 10,
+    actionTimeout: 1000 * 30,
     browserName: 'chromium',
     headless: false,
     locale: 'en-GB',
@@ -35,7 +31,6 @@ export default defineConfig({
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        viewport,
       },
     },
   ],
